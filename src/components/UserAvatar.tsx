@@ -7,7 +7,7 @@ export function UserAvatar({
   online,
 }: {
   name: string;
-  avatar?: string | null;
+  avatar?: string | null | undefined;
   size?: number;
   online?: boolean;
 }) {
