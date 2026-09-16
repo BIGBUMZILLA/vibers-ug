@@ -81,14 +81,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Rouge — private messaging in red" },
+      { title: "VIBER UG — messaging in red" },
       {
         name: "description",
         content:
-          "Rouge is a fast, private messenger for chats, groups and photos — with a bold red look in light or dark mode.",
+          "VIBER UG is a private real-time messenger for chats, groups and photos in a bold red theme.",
       },
-      { name: "author", content: "Rouge" },
-      { property: "og:title", content: "Rouge — private messaging in red" },
+      { name: "author", content: "VIBER UG" },
+      { property: "og:title", content: "VIBER UG — messaging in red" },
       {
         property: "og:description",
         content: "Chat one-to-one or in groups, share photos, and switch between light and dark.",
@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
 
   }),
@@ -121,6 +121,11 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('viber-ug-theme')||localStorage.getItem('rouge-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}})()`,
+          }}
+        />
         <HeadContent />
       </head>
       <body>

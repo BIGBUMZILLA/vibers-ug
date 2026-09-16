@@ -1,24 +1,27 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { MessageCircleHeart, Images, Users, Moon } from "lucide-react";
+import { MessageCircleHeart, Images, Users } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/lib/theme";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { CatBrand } from "@/components/CatBrand";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Rouge — private messaging in red" },
+      { title: "VIBER UG — messaging in red" },
       {
         name: "description",
         content:
-          "Rouge is a fast, private messenger for one-to-one chats, groups and photo sharing, in bold red light or dark mode.",
+          "VIBER UG is a private real-time messenger for one-to-one chats, groups and photo sharing in red.",
       },
-      { property: "og:title", content: "Rouge — private messaging in red" },
+      { property: "og:title", content: "VIBER UG — messaging in red" },
       {
         property: "og:description",
         content: "Chat, create groups and share photos in real time. Light or dark, always red.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Landing,
@@ -27,7 +30,6 @@ export const Route = createFileRoute("/")({
 function Landing() {
   const { session, loading } = useAuth();
   const navigate = useNavigate();
-  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     if (!loading && session) navigate({ to: "/chats", replace: true });
@@ -36,11 +38,9 @@ function Landing() {
   return (
     <main className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
-        <span className="font-display text-2xl font-bold tracking-tight text-primary">Rouge</span>
+        <span className="flex items-center gap-3 font-display text-xl font-bold text-primary"><CatBrand compact /> VIBER UG</span>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={toggle} aria-label="Switch theme">
-            <Moon className={theme === "dark" ? "text-primary" : ""} />
-          </Button>
+          <ThemeToggle />
           <Button asChild>
             <Link to="/auth">Get started</Link>
           </Button>
@@ -49,7 +49,7 @@ function Landing() {
 
       <section className="mx-auto max-w-5xl px-6 pb-20 pt-10">
         <h1 className="max-w-3xl font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-          Messaging that feels <span className="text-primary">alive</span>, in red.
+          VIBER UG messaging feels <span className="text-primary">alive</span>.
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">
           Real-time one-to-one chats, groups, photo sharing, reactions, read receipts and

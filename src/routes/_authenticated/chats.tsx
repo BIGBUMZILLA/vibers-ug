@@ -1,13 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { LogOut, Moon, Search, SquarePen, Sun, Users } from "lucide-react";
+import { MoreVertical, Search, Settings, SquarePen } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useTheme } from "@/lib/theme";
 import { UserAvatar } from "@/components/UserAvatar";
+import { CatBrand } from "@/components/CatBrand";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -30,10 +37,12 @@ import {
 export const Route = createFileRoute("/_authenticated/chats")({
   head: () => ({
     meta: [
-      { title: "Your chats · Rouge" },
-      { name: "description", content: "All your Rouge conversations in one place." },
-      { property: "og:title", content: "Your chats · Rouge" },
-      { property: "og:description", content: "All your Rouge conversations in one place." },
+      { title: "Your chats · VIBER UG" },
+      { name: "description", content: "All your VIBER UG conversations in one place." },
+      { property: "og:title", content: "Your chats · VIBER UG" },
+      { property: "og:description", content: "All your VIBER UG conversations in one place." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ChatsPage,
@@ -42,7 +51,6 @@ export const Route = createFileRoute("/_authenticated/chats")({
 function ChatsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { theme, toggle } = useTheme();
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [filter, setFilter] = useState("");
   const [loading, setLoading] = useState(true);
@@ -88,45 +96,24 @@ function ChatsPage() {
     );
   }, [conversations, filter]);
 
-  async function signOut() {
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
-  }
-
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col bg-background">
+    <main className="mx-auto flex min-h-screen max-w-2xl flex-col border-x bg-background">
       <header className="sticky top-0 z-10 border-b bg-primary px-4 py-3 text-primary-foreground">
         <div className="flex items-center justify-between">
-          <h1 className="font-display text-xl font-bold tracking-tight">Rouge</h1>
+          <h1 className="flex items-center gap-2 font-display text-xl font-bold"><CatBrand compact /> VIBER UG</h1>
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggle}
-              aria-label="Switch theme"
-              className="text-primary-foreground hover:bg-white/15"
-            >
-              {theme === "dark" ? <Sun /> : <Moon />}
-            </Button>
-            <Button
-              asChild
-              variant="ghost"
-              size="icon"
-              className="text-primary-foreground hover:bg-white/15"
-            >
-              <Link to="/profile" aria-label="Your profile">
-                <Users />
-              </Link>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={signOut}
-              aria-label="Sign out"
-              className="text-primary-foreground hover:bg-white/15"
-            >
-              <LogOut />
-            </Button>
+            <ThemeToggle onPrimary />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/15" aria-label="Open menu">
+                  <MoreVertical />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem asChild><Link to="/profile">Profile</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to="/settings"><Settings /> Settings</Link></DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className="relative mt-3">
@@ -135,7 +122,7 @@ function ChatsPage() {
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Search chats"
-            className="border-white/20 bg-white/15 pl-9 text-primary-foreground placeholder:text-primary-foreground/70"
+            className="border-primary-foreground/20 bg-primary-foreground/15 pl-9 text-primary-foreground placeholder:text-primary-foreground/70"
           />
         </div>
       </header>
@@ -258,7 +245,7 @@ function NewChatButton({
       <DialogTrigger asChild>
         <Button
           size="icon"
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-2xl shadow-lg sm:right-[calc(50%-20rem)]"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-lg shadow-lg sm:right-[calc(50%-20rem)]"
           aria-label="New chat"
         >
           <SquarePen />
