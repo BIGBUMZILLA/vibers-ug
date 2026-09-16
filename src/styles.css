@@ -150,6 +150,23 @@
   }
 }
 
+@keyframes cat-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+
+@keyframes cat-peek {
+  0%, 86%, 100% { transform: scaleY(1); }
+  91% { transform: scaleY(0.92); }
+}
+
+.cat-badge { animation: cat-float 3.8s ease-in-out infinite; }
+.cat-wiggle { animation: cat-peek 4.5s ease-in-out infinite; transform-origin: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-badge, .cat-wiggle { animation: none; }
+}
+
 @utility chat-wallpaper {
   background-color: var(--chat-canvas);
   background-image:

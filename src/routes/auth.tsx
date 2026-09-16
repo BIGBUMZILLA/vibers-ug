@@ -7,14 +7,18 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { CatBrand } from "@/components/CatBrand";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in to Rouge" },
-      { name: "description", content: "Sign in or create your Rouge account to start chatting." },
-      { property: "og:title", content: "Sign in to Rouge" },
+      { title: "Sign in to VIBER UG" },
+      { name: "description", content: "Sign in or create your VIBER UG account to start chatting." },
+      { property: "og:title", content: "Sign in to VIBER UG" },
       { property: "og:description", content: "Create an account or sign in to start chatting." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,
@@ -77,23 +81,22 @@ function AuthPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white px-5 py-10">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-5 py-8">
       <Doodles />
+      <div className="absolute right-4 top-4 z-20">
+        <ThemeToggle />
+      </div>
 
       <div className="relative z-10 w-full max-w-sm">
         <div className="flex flex-col items-center text-center">
-          <div className="cat-badge flex h-28 w-28 items-center justify-center rounded-full bg-primary shadow-xl">
-            <span className="cat-wiggle text-6xl" role="img" aria-label="Orange cat">
-              🐱
-            </span>
-          </div>
-          <Link to="/" className="mt-5 font-display text-3xl font-bold text-primary">
-            Rouge
+          <Link to="/" className="mb-4 font-display text-3xl font-bold text-primary">
+            VIBER UG
           </Link>
-          <h1 className="mt-2 font-display text-2xl font-bold tracking-tight text-neutral-900">
+          <CatBrand />
+          <h1 className="mt-5 font-display text-2xl font-bold text-foreground">
             {mode === "signup" ? "Create your account" : "Welcome back"}
           </h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             {mode === "signup"
               ? "A name, an email and you're chatting."
               : "Sign in to pick up your conversations."}
@@ -101,7 +104,7 @@ function AuthPage() {
         </div>
 
         {sent ? (
-          <div className="mt-8 rounded-2xl border border-neutral-200 bg-white p-5 text-sm text-neutral-700">
+          <div className="mt-8 rounded-lg border bg-card p-5 text-sm text-card-foreground shadow-sm">
             Check your inbox — we sent a confirmation link to <strong>{email}</strong>. Open it to
             finish creating your account.
           </div>
@@ -110,7 +113,7 @@ function AuthPage() {
             <form onSubmit={handleSubmit} className="mt-8 space-y-4">
               {mode === "signup" && (
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-neutral-700">
+                  <Label htmlFor="name">
                     Your name
                   </Label>
                   <Input
@@ -119,12 +122,12 @@ function AuthPage() {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Alex Doe"
                     autoComplete="name"
-                    className="h-12 rounded-xl border-neutral-200 bg-white text-neutral-900"
+                    className="h-12"
                   />
                 </div>
               )}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-neutral-700">
+                <Label htmlFor="email">
                   Email
                 </Label>
                 <Input
@@ -134,11 +137,11 @@ function AuthPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
-                  className="h-12 rounded-xl border-neutral-200 bg-white text-neutral-900"
+                  className="h-12"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-neutral-700">
+                <Label htmlFor="password">
                   Password
                 </Label>
                 <Input
@@ -149,12 +152,12 @@ function AuthPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                  className="h-12 rounded-xl border-neutral-200 bg-white text-neutral-900"
+                  className="h-12"
                 />
               </div>
               <Button
                 type="submit"
-                className="h-12 w-full rounded-xl text-base font-semibold shadow-md shadow-primary/25"
+                className="h-12 w-full text-base font-semibold shadow-md shadow-primary/25"
                 disabled={busy}
               >
                 {busy ? "Please wait…" : mode === "signup" ? "Create account" : "Log in"}
@@ -162,16 +165,16 @@ function AuthPage() {
               <Button
                 type="button"
                 variant="outline"
-                className="h-12 w-full rounded-xl border-2 border-primary text-base font-semibold text-primary hover:bg-primary hover:text-primary-foreground"
+                className="h-12 w-full border-2 border-primary text-base font-semibold text-primary hover:bg-primary hover:text-primary-foreground"
                 onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
               >
                 {mode === "signup" ? "I already have an account" : "Create an account"}
               </Button>
             </form>
 
-            <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-wide text-neutral-400">
-              <span className="h-px flex-1 bg-neutral-200" /> or continue with
-              <span className="h-px flex-1 bg-neutral-200" />
+            <div className="my-6 flex items-center gap-3 text-xs uppercase text-muted-foreground">
+              <span className="h-px flex-1 bg-border" /> or continue with
+              <span className="h-px flex-1 bg-border" />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
@@ -187,7 +190,7 @@ function AuthPage() {
                   type="button"
                   onClick={() => void handleOAuth(provider)}
                   aria-label={`Continue with ${label}`}
-                  className="flex h-12 items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white text-lg text-neutral-800 transition-colors hover:bg-neutral-50"
+                  className="flex h-12 items-center justify-center gap-2 rounded-md border bg-card text-lg text-card-foreground transition-colors hover:bg-accent"
                 >
                   <span aria-hidden>{glyph}</span>
                 </button>
@@ -204,28 +207,31 @@ function Doodles() {
   return (
     <svg
       aria-hidden
-      className="pointer-events-none absolute inset-0 h-full w-full text-neutral-200"
+      className="pointer-events-none absolute inset-0 h-full w-full text-muted-foreground/20"
       viewBox="0 0 400 800"
       preserveAspectRatio="xMidYMid slice"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth="1.4"
       strokeLinecap="round"
     >
-      <circle cx="48" cy="70" r="22" />
-      <path d="M330 60c14-18 34-6 24 10-6 10-24 16-24 16s-18-6-24-16c-10-16 10-28 24-10z" />
-      <path d="M40 300l18-30 18 30z" />
-      <path d="M340 250h44v34h-30l-14 12z" />
-      <path d="M60 620c20-24 50-24 70 0" />
-      <circle cx="356" cy="640" r="16" />
-      <path d="M350 636h12M350 646h12" />
-      <path d="M120 120h50M120 132h30" />
-      <path d="M250 720c10-14 28-14 38 0" />
-      <circle cx="200" cy="40" r="6" />
-      <circle cx="300" cy="430" r="8" />
-      <circle cx="70" cy="470" r="5" />
-      <path d="M150 560l10 10-10 10-10-10z" />
-      <path d="M270 160l8 8-8 8-8-8z" />
+      <circle cx="31" cy="87" r="7" />
+      <path d="M349 42c5-7 13-2 9 4-2 4-9 6-9 6s-7-2-9-6c-4-6 4-11 9-4z" />
+      <path d="M53 247l7-11 7 11z" />
+      <path d="M369 193h14v10h-9l-5 4z" />
+      <path d="M23 681c7-8 17-8 24 0" />
+      <circle cx="373" cy="729" r="5" />
+      <path d="M371 727h4M371 731h4" />
+      <path d="M91 151h16M91 155h9" />
+      <path d="M298 673c4-5 10-5 14 0" />
+      <circle cx="223" cy="22" r="2" />
+      <circle cx="331" cy="469" r="3" />
+      <circle cx="46" cy="516" r="2" />
+      <path d="M113 594l4 4-4 4-4-4z" />
+      <path d="M278 126l3 3-3 3-3-3z" />
+      <path d="M18 395h10m-5-5v10" />
+      <path d="M382 563h9m-4.5-4.5v9" />
+      <circle cx="153" cy="747" r="3" />
     </svg>
   );
 }
