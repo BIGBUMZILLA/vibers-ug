@@ -14,10 +14,12 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
-      { title: "Your profile · Rouge" },
-      { name: "description", content: "Update your Rouge name, photo and status." },
-      { property: "og:title", content: "Your profile · Rouge" },
-      { property: "og:description", content: "Update your Rouge name, photo and status." },
+      { title: "Your profile · VIBER UG" },
+      { name: "description", content: "Update your VIBER UG name, photo, username and status." },
+      { property: "og:title", content: "Your profile · VIBER UG" },
+      { property: "og:description", content: "Update your VIBER UG profile." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProfilePage,
@@ -37,12 +39,21 @@ function ProfilePage() {
 
   async function save() {
     if (!profile || !user) return;
+    const cleanUsername = profile.username.toLowerCase().replace(/[^a-z0-9_]/g, "");
+    if (!profile.display_name.trim()) {
+      toast.error("Add your name");
+      return;
+    }
+    if (cleanUsername.length < 3) {
+      toast.error("Username must have at least 3 letters or numbers");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
       .update({
-        display_name: profile.display_name,
-        username: profile.username.toLowerCase().replace(/[^a-z0-9_]/g, ""),
+        display_name: profile.display_name.trim(),
+        username: cleanUsername,
         about: profile.about,
       })
       .eq("id", user.id);
@@ -76,13 +87,13 @@ function ProfilePage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-2xl bg-background">
+    <main className="mx-auto min-h-screen max-w-2xl border-x bg-background">
       <header className="flex items-center gap-3 bg-primary px-4 py-3 text-primary-foreground">
         <Button
           asChild
           variant="ghost"
           size="icon"
-          className="text-primary-foreground hover:bg-white/15"
+          className="text-primary-foreground hover:bg-primary-foreground/15"
         >
           <Link to="/chats" aria-label="Back to chats">
             <ArrowLeft />
@@ -118,6 +129,11 @@ function ProfilePage() {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="email">Account email</Label>
+            <Input id="email" value={user?.email ?? ""} disabled />
+            <p className="text-xs text-muted-foreground">Your secure sign-in email cannot be changed here yet.</p>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="display">Name</Label>
             <Input
               id="display"
@@ -150,7 +166,7 @@ function ProfilePage() {
             <Button onClick={save} disabled={saving} className="flex-1">
               {saving ? "Saving…" : "Save changes"}
             </Button>
-            <Button variant="outline" onClick={signOut}>
+            <Button variant="outline" onClick={signOut} className="text-destructive">
               Sign out
             </Button>
           </div>

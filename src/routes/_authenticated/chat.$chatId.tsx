@@ -23,10 +23,12 @@ const REACTIONS = ["❤️", "😂", "👍", "😮", "😢", "🙏"];
 export const Route = createFileRoute("/_authenticated/chat/$chatId")({
   head: () => ({
     meta: [
-      { title: "Conversation · Rouge" },
-      { name: "description", content: "Chat in real time and share photos on Rouge." },
-      { property: "og:title", content: "Conversation · Rouge" },
-      { property: "og:description", content: "Chat in real time and share photos on Rouge." },
+      { title: "Conversation · VIBER UG" },
+      { name: "description", content: "Chat in real time and share photos on VIBER UG." },
+      { property: "og:title", content: "Conversation · VIBER UG" },
+      { property: "og:description", content: "Chat in real time and share photos on VIBER UG." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ChatRoom,
@@ -183,13 +185,13 @@ function ChatRoom() {
   }
 
   return (
-    <main className="mx-auto flex h-screen max-w-2xl flex-col bg-background">
+    <main className="mx-auto flex h-screen max-w-2xl flex-col border-x bg-background">
       <header className="flex items-center gap-3 bg-primary px-3 py-2.5 text-primary-foreground">
         <Button
           asChild
           variant="ghost"
           size="icon"
-          className="text-primary-foreground hover:bg-white/15"
+          className="text-primary-foreground hover:bg-primary-foreground/15"
         >
           <Link to="/chats" aria-label="Back to chats">
             <ArrowLeft />
