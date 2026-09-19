@@ -7,7 +7,16 @@ export type Profile = {
   avatar_url: string | null;
   about: string;
   last_seen: string;
+  phone?: string | null;
+  phone_e164?: string | null;
 };
+
+/** Turns any typed number into a comparable +digits form. */
+export function normalizePhone(input: string): string | null {
+  const digits = input.replace(/[^\d]/g, "");
+  if (digits.length < 6) return null;
+  return `+${digits}`;
+}
 
 export type Message = {
   id: string;
@@ -36,13 +45,47 @@ export async function getMyProfile(userId: string) {
   return data as Profile | null;
 }
 
+/** Everyone I can reach, optionally filtered by name, username or phone number. */
 export async function searchProfiles(query: string, meId: string) {
-  let q = supabase.from("profiles").select("*").neq("id", meId).limit(25);
-  if (query.trim()) {
-    q = q.or(`username.ilike.%${query.trim()}%,display_name.ilike.%${query.trim()}%`);
+  let q = supabase.from("profiles").select("*").neq("id", meId).limit(50);
+  const term = query.trim();
+  if (term) {
+    const filters = [`username.ilike.%${term}%`, `display_name.ilike.%${term}%`];
+    const phone = normalizePhone(term);
+    if (phone) {
+      filters.push(`phone_e164.ilike.%${phone.slice(1)}%`);
+    }
+    q = q.or(filters.join(","));
   }
-  const { data } = await q;
-  return (data ?? []) as Profile[];
+  const [{ data }, blocked] = await Promise.all([q, listBlockRelations(meId)]);
+  const hidden = new Set(blocked.map((b) => b.otherId));
+  return ((data ?? []) as Profile[]).filter((p) => !hidden.has(p.id));
+}
+
+export type BlockRelation = { otherId: string; iBlockedThem: boolean };
+
+export async function listBlockRelations(meId: string): Promise<BlockRelation[]> {
+  const { data } = await supabase.from("blocked_contacts").select("blocker_id, blocked_id");
+  return (data ?? []).map((r) => ({
+    otherId: r.blocker_id === meId ? r.blocked_id : r.blocker_id,
+    iBlockedThem: r.blocker_id === meId,
+  }));
+}
+
+export async function blockUser(meId: string, otherId: string) {
+  const { error } = await supabase
+    .from("blocked_contacts")
+    .insert({ blocker_id: meId, blocked_id: otherId });
+  if (error) throw error;
+}
+
+export async function unblockUser(meId: string, otherId: string) {
+  const { error } = await supabase
+    .from("blocked_contacts")
+    .delete()
+    .eq("blocker_id", meId)
+    .eq("blocked_id", otherId);
+  if (error) throw error;
 }
 
 export async function listConversations(meId: string): Promise<ConversationSummary[]> {
