@@ -15,6 +15,13 @@
       "when": 1789438820414,
       "tag": "0001_storage_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789844808769,
+      "tag": "0002_phone_directory_and_blocking",
+      "breakpoints": true
     }
   ]
 }

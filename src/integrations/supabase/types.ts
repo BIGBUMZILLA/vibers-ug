@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocked_contacts: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -165,6 +183,7 @@ export type Database = {
           id: string
           last_seen: string
           phone: string | null
+          phone_e164: string | null
           username: string
         }
         Insert: {
@@ -175,6 +194,7 @@ export type Database = {
           id: string
           last_seen?: string
           phone?: string | null
+          phone_e164?: string | null
           username: string
         }
         Update: {
@@ -185,6 +205,7 @@ export type Database = {
           id?: string
           last_seen?: string
           phone?: string | null
+          phone_e164?: string | null
           username?: string
         }
         Relationships: []
@@ -194,6 +215,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      conversation_blocked_for: {
+        Args: { _conversation_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_blocked_between: { Args: { _a: string; _b: string }; Returns: boolean }
       is_participant: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
