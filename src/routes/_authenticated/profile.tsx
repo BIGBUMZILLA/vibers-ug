@@ -48,6 +48,12 @@ function ProfilePage() {
       toast.error("Username must have at least 3 letters or numbers");
       return;
     }
+    const typedPhone = (profile.phone ?? "").trim();
+    const e164 = typedPhone ? normalizePhone(typedPhone) : null;
+    if (typedPhone && !e164) {
+      toast.error("That phone number looks too short");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
@@ -55,12 +61,19 @@ function ProfilePage() {
         display_name: profile.display_name.trim(),
         username: cleanUsername,
         about: profile.about,
+        phone: typedPhone || null,
+        phone_e164: e164,
       })
       .eq("id", user.id);
     setSaving(false);
     if (error) {
+      const duplicate = error.message.includes("duplicate");
       toast.error(
-        error.message.includes("duplicate") ? "That username is taken" : "Couldn't save changes",
+        duplicate
+          ? error.message.includes("phone")
+            ? "That phone number is already on another account"
+            : "That username is taken"
+          : "Couldn't save changes",
       );
       return;
     }
