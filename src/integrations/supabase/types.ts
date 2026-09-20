@@ -224,6 +224,21 @@ export type Database = {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
       }
+      search_profiles: {
+        Args: { _term: string }
+        Returns: {
+          about: string
+          avatar_url: string
+          display_name: string
+          id: string
+          last_seen: string
+          username: string
+        }[]
+      }
+      shares_conversation: {
+        Args: { _a: string; _b: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

@@ -22,6 +22,13 @@
       "when": 1789844808769,
       "tag": "0002_phone_directory_and_blocking",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789938363329,
+      "tag": "0003_restrict_profile_reads_and_search_rpc",
+      "breakpoints": true
     }
   ]
 }
