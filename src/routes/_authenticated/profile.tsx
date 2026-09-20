@@ -4,7 +4,7 @@ import { ArrowLeft, Camera } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { getMyProfile, type Profile } from "@/lib/chat";
+import { getMyProfile, normalizePhone, type Profile } from "@/lib/chat";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,6 +48,12 @@ function ProfilePage() {
       toast.error("Username must have at least 3 letters or numbers");
       return;
     }
+    const typedPhone = (profile.phone ?? "").trim();
+    const e164 = typedPhone ? normalizePhone(typedPhone) : null;
+    if (typedPhone && !e164) {
+      toast.error("That phone number looks too short");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
@@ -55,12 +61,19 @@ function ProfilePage() {
         display_name: profile.display_name.trim(),
         username: cleanUsername,
         about: profile.about,
+        phone: typedPhone || null,
+        phone_e164: e164,
       })
       .eq("id", user.id);
     setSaving(false);
     if (error) {
+      const duplicate = error.message.includes("duplicate");
       toast.error(
-        error.message.includes("duplicate") ? "That username is taken" : "Couldn't save changes",
+        duplicate
+          ? error.message.includes("phone")
+            ? "That phone number is already on another account"
+            : "That username is taken"
+          : "Couldn't save changes",
       );
       return;
     }
@@ -150,6 +163,21 @@ function ProfilePage() {
             />
             <p className="text-xs text-muted-foreground">
               Friends can find you with @{profile.username}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              inputMode="tel"
+              placeholder="+256 700 000 000"
+              value={profile.phone ?? ""}
+              onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">
+              People who know your number can start a chat with you. Your number is never shown to
+              others.
             </p>
           </div>
           <div className="space-y-2">
