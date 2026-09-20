@@ -4,7 +4,7 @@ import { ArrowLeft, Camera } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { getMyProfile, type Profile } from "@/lib/chat";
+import { getMyProfile, normalizePhone, type Profile } from "@/lib/chat";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -163,6 +163,21 @@ function ProfilePage() {
             />
             <p className="text-xs text-muted-foreground">
               Friends can find you with @{profile.username}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone number</Label>
+            <Input
+              id="phone"
+              type="tel"
+              inputMode="tel"
+              placeholder="+256 700 000 000"
+              value={profile.phone ?? ""}
+              onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">
+              People who know your number can start a chat with you. Your number is never shown to
+              others.
             </p>
           </div>
           <div className="space-y-2">
