@@ -45,21 +45,17 @@ export async function getMyProfile(userId: string) {
   return data as Profile | null;
 }
 
-/** Everyone I can reach, optionally filtered by name, username or phone number. */
+/**
+ * Everyone I can reach, optionally filtered by name, username or phone number.
+ * Uses a directory search that never returns other people's phone numbers.
+ */
 export async function searchProfiles(query: string, meId: string) {
-  let q = supabase.from("profiles").select("*").neq("id", meId).limit(50);
-  const term = query.trim();
-  if (term) {
-    const filters = [`username.ilike.%${term}%`, `display_name.ilike.%${term}%`];
-    const phone = normalizePhone(term);
-    if (phone) {
-      filters.push(`phone_e164.ilike.%${phone.slice(1)}%`);
-    }
-    q = q.or(filters.join(","));
-  }
-  const [{ data }, blocked] = await Promise.all([q, listBlockRelations(meId)]);
+  const [{ data }, blocked] = await Promise.all([
+    supabase.rpc("search_profiles", { _term: query.trim() }),
+    listBlockRelations(meId),
+  ]);
   const hidden = new Set(blocked.map((b) => b.otherId));
-  return ((data ?? []) as Profile[]).filter((p) => !hidden.has(p.id));
+  return ((data ?? []) as Profile[]).filter((p) => p.id !== meId && !hidden.has(p.id));
 }
 
 export type BlockRelation = { otherId: string; iBlockedThem: boolean };
