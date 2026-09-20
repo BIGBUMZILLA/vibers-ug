@@ -12,9 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedChannelsRouteImport } from './routes/_authenticated/channels'
 import { Route as AuthenticatedChatsRouteImport } from './routes/_authenticated/chats'
+import { Route as AuthenticatedCommunitiesRouteImport } from './routes/_authenticated/communities'
+import { Route as AuthenticatedGarryRouteImport } from './routes/_authenticated/garry'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedStatusRouteImport } from './routes/_authenticated/status'
 import { Route as AuthenticatedChatChatIdRouteImport } from './routes/_authenticated/chat.$chatId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -31,9 +35,25 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedChannelsRoute = AuthenticatedChannelsRouteImport.update({
+  id: '/channels',
+  path: '/channels',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedChatsRoute = AuthenticatedChatsRouteImport.update({
   id: '/chats',
   path: '/chats',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCommunitiesRoute =
+  AuthenticatedCommunitiesRouteImport.update({
+    id: '/communities',
+    path: '/communities',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedGarryRoute = AuthenticatedGarryRouteImport.update({
+  id: '/garry',
+  path: '/garry',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -46,6 +66,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedStatusRoute = AuthenticatedStatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedChatChatIdRoute = AuthenticatedChatChatIdRouteImport.update({
   id: '/chat/$chatId',
   path: '/chat/$chatId',
@@ -55,17 +80,25 @@ const AuthenticatedChatChatIdRoute = AuthenticatedChatChatIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/channels': typeof AuthenticatedChannelsRoute
   '/chats': typeof AuthenticatedChatsRoute
+  '/communities': typeof AuthenticatedCommunitiesRoute
+  '/garry': typeof AuthenticatedGarryRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/status': typeof AuthenticatedStatusRoute
   '/chat/$chatId': typeof AuthenticatedChatChatIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/channels': typeof AuthenticatedChannelsRoute
   '/chats': typeof AuthenticatedChatsRoute
+  '/communities': typeof AuthenticatedCommunitiesRoute
+  '/garry': typeof AuthenticatedGarryRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/status': typeof AuthenticatedStatusRoute
   '/chat/$chatId': typeof AuthenticatedChatChatIdRoute
 }
 export interface FileRoutesById {
@@ -73,25 +106,52 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/channels': typeof AuthenticatedChannelsRoute
   '/_authenticated/chats': typeof AuthenticatedChatsRoute
+  '/_authenticated/communities': typeof AuthenticatedCommunitiesRoute
+  '/_authenticated/garry': typeof AuthenticatedGarryRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/status': typeof AuthenticatedStatusRoute
   '/_authenticated/chat/$chatId': typeof AuthenticatedChatChatIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/chats' | '/profile' | '/settings' | '/chat/$chatId'
+    | '/'
+    | '/auth'
+    | '/channels'
+    | '/chats'
+    | '/communities'
+    | '/garry'
+    | '/profile'
+    | '/settings'
+    | '/status'
+    | '/chat/$chatId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/chats' | '/profile' | '/settings' | '/chat/$chatId'
+  to:
+    | '/'
+    | '/auth'
+    | '/channels'
+    | '/chats'
+    | '/communities'
+    | '/garry'
+    | '/profile'
+    | '/settings'
+    | '/status'
+    | '/chat/$chatId'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/channels'
     | '/_authenticated/chats'
+    | '/_authenticated/communities'
+    | '/_authenticated/garry'
     | '/_authenticated/profile'
     | '/_authenticated/settings'
+    | '/_authenticated/status'
     | '/_authenticated/chat/$chatId'
   fileRoutesById: FileRoutesById
 }
@@ -124,11 +184,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/channels': {
+      id: '/_authenticated/channels'
+      path: '/channels'
+      fullPath: '/channels'
+      preLoaderRoute: typeof AuthenticatedChannelsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/chats': {
       id: '/_authenticated/chats'
       path: '/chats'
       fullPath: '/chats'
       preLoaderRoute: typeof AuthenticatedChatsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/communities': {
+      id: '/_authenticated/communities'
+      path: '/communities'
+      fullPath: '/communities'
+      preLoaderRoute: typeof AuthenticatedCommunitiesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/garry': {
+      id: '/_authenticated/garry'
+      path: '/garry'
+      fullPath: '/garry'
+      preLoaderRoute: typeof AuthenticatedGarryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -145,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/status': {
+      id: '/_authenticated/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof AuthenticatedStatusRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/chat/$chatId': {
       id: '/_authenticated/chat/$chatId'
       path: '/chat/$chatId'
@@ -156,16 +244,24 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedChannelsRoute: typeof AuthenticatedChannelsRoute
   AuthenticatedChatsRoute: typeof AuthenticatedChatsRoute
+  AuthenticatedCommunitiesRoute: typeof AuthenticatedCommunitiesRoute
+  AuthenticatedGarryRoute: typeof AuthenticatedGarryRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedStatusRoute: typeof AuthenticatedStatusRoute
   AuthenticatedChatChatIdRoute: typeof AuthenticatedChatChatIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedChannelsRoute: AuthenticatedChannelsRoute,
   AuthenticatedChatsRoute: AuthenticatedChatsRoute,
+  AuthenticatedCommunitiesRoute: AuthenticatedCommunitiesRoute,
+  AuthenticatedGarryRoute: AuthenticatedGarryRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedStatusRoute: AuthenticatedStatusRoute,
   AuthenticatedChatChatIdRoute: AuthenticatedChatChatIdRoute,
 }
 
