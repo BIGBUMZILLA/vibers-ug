@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { MoreVertical, Search } from "lucide-react";
+import { toast } from "sonner";
 import { UserAvatar } from "@/components/UserAvatar";
 import { CatBrand } from "@/components/CatBrand";
 import { ThemeToggle } from "@/components/ThemeToggle";
