@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { MoreVertical, Search } from "lucide-react";
+import { toast } from "sonner";
 import { UserAvatar } from "@/components/UserAvatar";
 import { CatBrand } from "@/components/CatBrand";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -14,7 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useConversations } from "@/hooks/useConversations";
-import { presenceLabel, timeLabel } from "@/lib/chat";
+import {
+  findProfileByUsername,
+  getOrCreateDirectChat,
+  presenceLabel,
+  searchProfiles,
+  timeLabel,
+  type Profile,
+} from "@/lib/chat";
+import { UserAvatar as PersonAvatar } from "@/components/UserAvatar";
 
 const FILTERS = ["All", "Unread", "Groups", "Direct"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -37,6 +46,46 @@ export function ChatList() {
       return name.toLowerCase().includes(q);
     });
   }, [conversations, filter, query]);
+
+  const [people, setPeople] = useState<Profile[]>([]);
+  const [opening, setOpening] = useState(false);
+
+  useEffect(() => {
+    const term = query.trim();
+    if (!meId || term.length < 2) {
+      setPeople([]);
+      return;
+    }
+    const t = setTimeout(() => {
+      void searchProfiles(term, meId).then(setPeople).catch(() => setPeople([]));
+    }, 250);
+    return () => clearTimeout(t);
+  }, [query, meId]);
+
+  async function openWith(otherId: string) {
+    if (opening) return;
+    setOpening(true);
+    try {
+      const id = await getOrCreateDirectChat(meId, otherId);
+      setQuery("");
+      await navigate({ to: "/chat/$chatId", params: { chatId: id } });
+    } catch {
+      toast.error("Couldn't open that chat");
+    } finally {
+      setOpening(false);
+    }
+  }
+
+  async function openByUsername() {
+    const term = query.trim();
+    if (!term || !meId) return;
+    const match = await findProfileByUsername(term, meId);
+    if (!match) {
+      toast.error(`No one on VIBER UG matches "${term}"`);
+      return;
+    }
+    await openWith(match.id);
+  }
 
   return (
     <div className="relative flex h-full min-h-0 flex-col bg-background">
@@ -75,15 +124,21 @@ export function ChatList() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="relative mt-3">
+        <form
+          className="relative mt-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void openByUsername();
+          }}
+        >
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary-foreground/70" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search chats"
+            placeholder="Search chats or type a username"
             className="border-primary-foreground/20 bg-primary-foreground/15 pl-9 text-primary-foreground placeholder:text-primary-foreground/70"
           />
-        </div>
+        </form>
       </header>
 
       <div className="flex gap-2 border-b px-3 py-2">
@@ -162,6 +217,34 @@ export function ChatList() {
               );
             })}
           </ul>
+        )}
+
+        {people.length > 0 && (
+          <div>
+            <p className="px-4 pb-1 pt-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              People on VIBER UG
+            </p>
+            <ul>
+              {people.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    disabled={opening}
+                    onClick={() => void openWith(p.id)}
+                    className="flex w-full items-center gap-3 border-b px-4 py-3 text-left transition-colors hover:bg-accent/40 disabled:opacity-60"
+                  >
+                    <PersonAvatar name={p.display_name} avatar={p.avatar_url} />
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium">{p.display_name}</span>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        @{p.username}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
 

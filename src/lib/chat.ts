@@ -58,6 +58,20 @@ export async function searchProfiles(query: string, meId: string) {
   return ((data ?? []) as Profile[]).filter((p) => p.id !== meId && !hidden.has(p.id));
 }
 
+/** Exact username (or phone) lookup in the live directory. */
+export async function findProfileByUsername(term: string, meId: string) {
+  const cleaned = term.trim().replace(/^@/, "");
+  if (!cleaned) return null;
+  const people = await searchProfiles(cleaned, meId);
+  const lower = cleaned.toLowerCase();
+  const phone = normalizePhone(cleaned);
+  return (
+    people.find((p) => p.username.toLowerCase() === lower) ??
+    people.find((p) => p.display_name.toLowerCase() === lower) ??
+    (phone ? (people.find((p) => p.phone_e164 === phone) ?? null) : null)
+  );
+}
+
 export type BlockRelation = { otherId: string; iBlockedThem: boolean };
 
 export async function listBlockRelations(meId: string): Promise<BlockRelation[]> {
