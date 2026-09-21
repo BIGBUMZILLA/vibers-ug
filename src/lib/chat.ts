@@ -192,7 +192,7 @@ export async function createGroupChat(meId: string, title: string, memberIds: st
   ];
   const { error: pErr } = await supabase.from("conversation_participants").insert(rows);
   if (pErr) throw pErr;
-  return convo.id;
+  return newId;
 }
 
 export async function markRead(conversationId: string, meId: string) {
