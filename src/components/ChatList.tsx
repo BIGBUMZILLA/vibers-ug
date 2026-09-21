@@ -47,6 +47,46 @@ export function ChatList() {
     });
   }, [conversations, filter, query]);
 
+  const [people, setPeople] = useState<Profile[]>([]);
+  const [opening, setOpening] = useState(false);
+
+  useEffect(() => {
+    const term = query.trim();
+    if (!meId || term.length < 2) {
+      setPeople([]);
+      return;
+    }
+    const t = setTimeout(() => {
+      void searchProfiles(term, meId).then(setPeople).catch(() => setPeople([]));
+    }, 250);
+    return () => clearTimeout(t);
+  }, [query, meId]);
+
+  async function openWith(otherId: string) {
+    if (opening) return;
+    setOpening(true);
+    try {
+      const id = await getOrCreateDirectChat(meId, otherId);
+      setQuery("");
+      await navigate({ to: "/chat/$chatId", params: { chatId: id } });
+    } catch {
+      toast.error("Couldn't open that chat");
+    } finally {
+      setOpening(false);
+    }
+  }
+
+  async function openByUsername() {
+    const term = query.trim();
+    if (!term || !meId) return;
+    const match = await findProfileByUsername(term, meId);
+    if (!match) {
+      toast.error(`No one on VIBER UG matches "${term}"`);
+      return;
+    }
+    await openWith(match.id);
+  }
+
   return (
     <div className="relative flex h-full min-h-0 flex-col bg-background">
       <header className="bg-primary px-4 py-3 text-primary-foreground">
