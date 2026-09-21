@@ -15,7 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useConversations } from "@/hooks/useConversations";
-import { presenceLabel, timeLabel } from "@/lib/chat";
+import {
+  findProfileByUsername,
+  getOrCreateDirectChat,
+  presenceLabel,
+  searchProfiles,
+  timeLabel,
+  type Profile,
+} from "@/lib/chat";
+import { UserAvatar as PersonAvatar } from "@/components/UserAvatar";
 
 const FILTERS = ["All", "Unread", "Groups", "Direct"] as const;
 type Filter = (typeof FILTERS)[number];
