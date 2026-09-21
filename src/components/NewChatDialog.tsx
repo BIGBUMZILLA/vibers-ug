@@ -45,8 +45,9 @@ export function NewChatDialog({
       const id = await getOrCreateDirectChat(meId, other.id);
       setOpen(false);
       onCreated(id);
-    } catch {
-      toast.error("Couldn't start that chat");
+    } catch (e) {
+      console.error("start chat failed", e);
+      toast.error(e instanceof Error ? e.message : "Couldn't start that chat");
     }
   }
 

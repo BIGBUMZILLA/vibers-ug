@@ -69,8 +69,9 @@ export function ChatList() {
       const id = await getOrCreateDirectChat(meId, otherId);
       setQuery("");
       await navigate({ to: "/chat/$chatId", params: { chatId: id } });
-    } catch {
-      toast.error("Couldn't open that chat");
+    } catch (e) {
+      console.error("open chat failed", e);
+      toast.error(e instanceof Error ? e.message : "Couldn't open that chat");
     } finally {
       setOpening(false);
     }
