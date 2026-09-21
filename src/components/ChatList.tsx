@@ -218,6 +218,34 @@ export function ChatList() {
             })}
           </ul>
         )}
+
+        {people.length > 0 && (
+          <div>
+            <p className="px-4 pb-1 pt-4 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              People on VIBER UG
+            </p>
+            <ul>
+              {people.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    disabled={opening}
+                    onClick={() => void openWith(p.id)}
+                    className="flex w-full items-center gap-3 border-b px-4 py-3 text-left transition-colors hover:bg-accent/40 disabled:opacity-60"
+                  >
+                    <PersonAvatar name={p.display_name} avatar={p.avatar_url} />
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium">{p.display_name}</span>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        @{p.username}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <NewChatDialog
