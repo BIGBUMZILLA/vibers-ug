@@ -167,30 +167,28 @@ export async function getOrCreateDirectChat(meId: string, otherId: string) {
       if (direct?.length) return direct[0]!.id;
     }
   }
-  const { data: convo, error } = await supabase
+  const newId = crypto.randomUUID();
+  const { error } = await supabase
     .from("conversations")
-    .insert({ is_group: false, created_by: meId })
-    .select("id")
-    .single();
-  if (error || !convo) throw error ?? new Error("Could not start chat");
+    .insert({ id: newId, is_group: false, created_by: meId });
+  if (error) throw error;
   const { error: pErr } = await supabase.from("conversation_participants").insert([
-    { conversation_id: convo.id, user_id: meId, is_admin: true },
-    { conversation_id: convo.id, user_id: otherId },
+    { conversation_id: newId, user_id: meId, is_admin: true },
+    { conversation_id: newId, user_id: otherId },
   ]);
   if (pErr) throw pErr;
-  return convo.id;
+  return newId;
 }
 
 export async function createGroupChat(meId: string, title: string, memberIds: string[]) {
-  const { data: convo, error } = await supabase
+  const newId = crypto.randomUUID();
+  const { error } = await supabase
     .from("conversations")
-    .insert({ is_group: true, title, created_by: meId })
-    .select("id")
-    .single();
-  if (error || !convo) throw error ?? new Error("Could not create group");
+    .insert({ id: newId, is_group: true, title, created_by: meId });
+  if (error) throw error;
   const rows = [
-    { conversation_id: convo.id, user_id: meId, is_admin: true },
-    ...memberIds.map((id) => ({ conversation_id: convo.id, user_id: id })),
+    { conversation_id: newId, user_id: meId, is_admin: true },
+    ...memberIds.map((id) => ({ conversation_id: newId, user_id: id })),
   ];
   const { error: pErr } = await supabase.from("conversation_participants").insert(rows);
   if (pErr) throw pErr;
