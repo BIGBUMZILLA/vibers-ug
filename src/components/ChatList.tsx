@@ -76,15 +76,21 @@ export function ChatList() {
             </DropdownMenu>
           </div>
         </div>
-        <div className="relative mt-3">
+        <form
+          className="relative mt-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void openByUsername();
+          }}
+        >
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary-foreground/70" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search chats"
+            placeholder="Search chats or type a username"
             className="border-primary-foreground/20 bg-primary-foreground/15 pl-9 text-primary-foreground placeholder:text-primary-foreground/70"
           />
-        </div>
+        </form>
       </header>
 
       <div className="flex gap-2 border-b px-3 py-2">
