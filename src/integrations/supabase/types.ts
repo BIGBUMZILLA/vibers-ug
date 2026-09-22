@@ -32,6 +32,186 @@ export type Database = {
         }
         Relationships: []
       }
+      channel_members: {
+        Row: {
+          channel_id: string
+          is_admin: boolean
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          channel_id: string
+          is_admin?: boolean
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          channel_id?: string
+          is_admin?: boolean
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_members_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      channel_posts: {
+        Row: {
+          author_id: string
+          channel_id: string
+          content: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+        }
+        Insert: {
+          author_id: string
+          channel_id: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+        }
+        Update: {
+          author_id?: string
+          channel_id?: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_posts_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      channels: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      communities: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      community_groups: {
+        Row: {
+          added_at: string
+          community_id: string
+          conversation_id: string
+        }
+        Insert: {
+          added_at?: string
+          community_id: string
+          conversation_id: string
+        }
+        Update: {
+          added_at?: string
+          community_id?: string
+          conversation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_groups_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_groups_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_members: {
+        Row: {
+          community_id: string
+          is_admin: boolean
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          is_admin?: boolean
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          is_admin?: boolean
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_members_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -210,6 +390,116 @@ export type Database = {
         }
         Relationships: []
       }
+      status_views: {
+        Row: {
+          status_id: string
+          viewed_at: string
+          viewer_id: string
+        }
+        Insert: {
+          status_id: string
+          viewed_at?: string
+          viewer_id: string
+        }
+        Update: {
+          status_id?: string
+          viewed_at?: string
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "status_views_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "statuses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      statuses: {
+        Row: {
+          background: string
+          content: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          image_url: string | null
+          user_id: string
+        }
+        Insert: {
+          background?: string
+          content?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          image_url?: string | null
+          user_id: string
+        }
+        Update: {
+          background?: string
+          content?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          image_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          about_visibility: string
+          chat_wallpaper: string
+          enter_is_send: boolean
+          font_size: string
+          group_notifications: boolean
+          last_seen_visible: boolean
+          media_auto_download: boolean
+          media_quality: string
+          message_notifications: boolean
+          notification_preview: boolean
+          notification_sound: boolean
+          profile_photo_visibility: string
+          read_receipts: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          about_visibility?: string
+          chat_wallpaper?: string
+          enter_is_send?: boolean
+          font_size?: string
+          group_notifications?: boolean
+          last_seen_visible?: boolean
+          media_auto_download?: boolean
+          media_quality?: string
+          message_notifications?: boolean
+          notification_preview?: boolean
+          notification_sound?: boolean
+          profile_photo_visibility?: string
+          read_receipts?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          about_visibility?: string
+          chat_wallpaper?: string
+          enter_is_send?: boolean
+          font_size?: string
+          group_notifications?: boolean
+          last_seen_visible?: boolean
+          media_auto_download?: boolean
+          media_quality?: string
+          message_notifications?: boolean
+          notification_preview?: boolean
+          notification_sound?: boolean
+          profile_photo_visibility?: string
+          read_receipts?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -220,6 +510,10 @@ export type Database = {
         Returns: boolean
       }
       is_blocked_between: { Args: { _a: string; _b: string }; Returns: boolean }
+      is_channel_member: {
+        Args: { _channel_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_participant: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean

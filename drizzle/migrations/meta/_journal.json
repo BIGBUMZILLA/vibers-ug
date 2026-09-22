@@ -43,6 +43,13 @@
       "when": 1790069087913,
       "tag": "0005_atomic_chat_creation",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790069553939,
+      "tag": "0006_social_features_and_settings",
+      "breakpoints": true
     }
   ]
 }
