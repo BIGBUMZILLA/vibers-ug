@@ -239,6 +239,11 @@ export type Database = {
         Args: { _a: string; _b: string }
         Returns: boolean
       }
+      start_direct_chat: { Args: { _other_id: string }; Returns: string }
+      start_group_chat: {
+        Args: { _member_ids: string[]; _title: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
