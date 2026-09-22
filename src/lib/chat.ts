@@ -144,55 +144,19 @@ export async function listConversations(meId: string): Promise<ConversationSumma
 }
 
 /** Finds an existing one-to-one chat with the given user, or creates one. */
-export async function getOrCreateDirectChat(meId: string, otherId: string) {
-  const { data: mine } = await supabase
-    .from("conversation_participants")
-    .select("conversation_id")
-    .eq("user_id", meId);
-  const myIds = (mine ?? []).map((r) => r.conversation_id);
-  if (myIds.length) {
-    const { data: shared } = await supabase
-      .from("conversation_participants")
-      .select("conversation_id")
-      .eq("user_id", otherId)
-      .in("conversation_id", myIds);
-    const sharedIds = (shared ?? []).map((r) => r.conversation_id);
-    if (sharedIds.length) {
-      const { data: direct } = await supabase
-        .from("conversations")
-        .select("id")
-        .eq("is_group", false)
-        .in("id", sharedIds)
-        .limit(1);
-      if (direct?.length) return direct[0]!.id;
-    }
-  }
-  const newId = crypto.randomUUID();
-  const { error } = await supabase
-    .from("conversations")
-    .insert({ id: newId, is_group: false, created_by: meId });
+export async function getOrCreateDirectChat(_meId: string, otherId: string) {
+  const { data, error } = await supabase.rpc("start_direct_chat", { _other_id: otherId });
   if (error) throw error;
-  const { error: pErr } = await supabase.from("conversation_participants").insert([
-    { conversation_id: newId, user_id: meId, is_admin: true },
-    { conversation_id: newId, user_id: otherId },
-  ]);
-  if (pErr) throw pErr;
-  return newId;
+  return data as string;
 }
 
-export async function createGroupChat(meId: string, title: string, memberIds: string[]) {
-  const newId = crypto.randomUUID();
-  const { error } = await supabase
-    .from("conversations")
-    .insert({ id: newId, is_group: true, title, created_by: meId });
+export async function createGroupChat(_meId: string, title: string, memberIds: string[]) {
+  const { data, error } = await supabase.rpc("start_group_chat", {
+    _title: title,
+    _member_ids: memberIds,
+  });
   if (error) throw error;
-  const rows = [
-    { conversation_id: newId, user_id: meId, is_admin: true },
-    ...memberIds.map((id) => ({ conversation_id: newId, user_id: id })),
-  ];
-  const { error: pErr } = await supabase.from("conversation_participants").insert(rows);
-  if (pErr) throw pErr;
-  return newId;
+  return data as string;
 }
 
 export async function markRead(conversationId: string, meId: string) {
