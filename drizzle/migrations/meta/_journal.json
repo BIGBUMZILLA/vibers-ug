@@ -50,6 +50,13 @@
       "when": 1790069553939,
       "tag": "0006_social_features_and_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791152186687,
+      "tag": "0007_urban_chat_preferences_and_attachments",
+      "breakpoints": true
     }
   ]
 }
