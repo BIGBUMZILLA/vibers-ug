@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "@/lib/theme";
+import { UrbanDoodles } from "@/components/UrbanDoodles";
+import { GarryProvider } from "@/components/GarryAssistant";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -81,14 +83,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "VIBER UG — messaging in red" },
+      { title: "VIBER UG 256 — The Pearl, connected" },
       {
         name: "description",
         content:
-          "VIBER UG is a private real-time messenger for chats, groups and photos in a bold red theme.",
+          "VIBER UG 256 is an urban Kampala messenger for real-time chats, groups and photos.",
       },
       { name: "author", content: "VIBER UG" },
-      { property: "og:title", content: "VIBER UG — messaging in red" },
+      { property: "og:title", content: "VIBER UG 256 — The Pearl, connected" },
       {
         property: "og:description",
         content: "Chat one-to-one or in groups, share photos, and switch between light and dark.",
@@ -105,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
@@ -123,7 +125,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('viber-ug-theme')||localStorage.getItem('rouge-theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark')}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem('viber-ug-theme');if(t!=='light')document.documentElement.classList.add('dark')}catch(e){}})()`,
           }}
         />
         <HeadContent />
@@ -153,7 +155,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <UrbanDoodles />
+        <GarryProvider><Outlet /></GarryProvider>
         <Toaster position="top-center" />
       </ThemeProvider>
     </QueryClientProvider>
