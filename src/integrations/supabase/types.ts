@@ -214,6 +214,7 @@ export type Database = {
       }
       conversation_participants: {
         Row: {
+          cleared_at: string
           conversation_id: string
           is_admin: boolean
           joined_at: string
@@ -221,6 +222,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cleared_at?: string
           conversation_id: string
           is_admin?: boolean
           joined_at?: string
@@ -228,6 +230,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cleared_at?: string
           conversation_id?: string
           is_admin?: boolean
           joined_at?: string
@@ -309,6 +312,8 @@ export type Database = {
           conversation_id: string
           created_at: string
           edited_at: string | null
+          file_name: string | null
+          file_url: string | null
           id: string
           image_url: string | null
           is_deleted: boolean
@@ -320,6 +325,8 @@ export type Database = {
           conversation_id: string
           created_at?: string
           edited_at?: string | null
+          file_name?: string | null
+          file_url?: string | null
           id?: string
           image_url?: string | null
           is_deleted?: boolean
@@ -331,6 +338,8 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           edited_at?: string | null
+          file_name?: string | null
+          file_url?: string | null
           id?: string
           image_url?: string | null
           is_deleted?: boolean
@@ -505,6 +514,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      clear_my_chats: { Args: never; Returns: undefined }
       conversation_blocked_for: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
