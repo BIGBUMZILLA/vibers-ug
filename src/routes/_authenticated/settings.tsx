@@ -87,7 +87,7 @@ function SettingsPage() {
       if (data) setS({ ...DEFAULTS, ...(data as Partial<Settings>) });
     });
     void listBlockRelations(user.id).then((rows) =>
-      setBlocked(rows.filter((r) => r.blocker_id === user.id).map((r) => r.blocked_id)),
+      setBlocked(rows.filter((r) => r.iBlockedThem).map((r) => r.otherId)),
     ).catch(() => {});
   }, [user]);
 
