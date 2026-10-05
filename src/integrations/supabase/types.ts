@@ -524,6 +524,10 @@ export type Database = {
         Args: { _channel_id: string; _user_id: string }
         Returns: boolean
       }
+      is_community_member: {
+        Args: { _community_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_participant: {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean

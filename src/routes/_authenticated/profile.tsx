@@ -129,6 +129,9 @@ function ProfilePage() {
                 <Camera className="h-4 w-4" />
               </span>
             </button>
+              <span className="inline-flex items-center gap-1 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-xs font-semibold text-foreground">
+                <span className="text-primary">✔</span> Urban Verified
+              </span>
             <input
               ref={fileRef}
               type="file"
