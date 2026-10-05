@@ -48,6 +48,7 @@ function ChatRoom() {
     title: string | null;
     avatar_url: string | null;
   } | null>(null);
+  const [reads, setReads] = useState<Record<string, string>>({});
   const [draft, setDraft] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [sending, setSending] = useState(false);
@@ -62,7 +63,10 @@ function ChatRoom() {
         .select("is_group, title, avatar_url")
         .eq("id", chatId)
         .maybeSingle(),
-      supabase.from("conversation_participants").select("user_id").eq("conversation_id", chatId),
+      supabase
+        .from("conversation_participants")
+        .select("user_id, last_read_at")
+        .eq("conversation_id", chatId),
       supabase
         .from("messages")
         .select("*")
@@ -74,7 +78,15 @@ function ChatRoom() {
       return;
     }
     setConvo(c);
-    setMessages((msgs ?? []) as Message[]);
+    const { data: me } = await supabase
+      .from("conversation_participants")
+      .select("cleared_at")
+      .eq("conversation_id", chatId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const cleared = me ? new Date(me.cleared_at).getTime() : 0;
+    setMessages(((msgs ?? []) as Message[]).filter((m) => new Date(m.created_at).getTime() > cleared));
+    setReads(Object.fromEntries((parts ?? []).map((p) => [p.user_id, p.last_read_at])));
     const ids = (parts ?? []).map((p) => p.user_id);
     if (ids.length) {
       const { data: profs } = await supabase.from("profiles").select("*").in("id", ids);
@@ -126,6 +138,10 @@ function ChatRoom() {
   }, [messages.length]);
 
   const others = people.filter((p) => p.id !== user?.id);
+  const readBy = (id: string, at: string) => {
+    const r = reads[id];
+    return !!r && new Date(r).getTime() >= new Date(at).getTime();
+  };
   const other = others[0];
   const title = convo?.is_group ? (convo.title ?? "Group") : (other?.display_name ?? "Chat");
   const subtitle = convo?.is_group
@@ -247,7 +263,17 @@ function ChatRoom() {
                       {m.content && <p className="whitespace-pre-wrap text-sm">{m.content}</p>}
                     </>
                   )}
-                  <p className="mt-1 text-right text-[10px] opacity-70">{timeLabel(m.created_at)}</p>
+                  <p className="mt-1 text-right text-[10px] opacity-70">
+                    {timeLabel(m.created_at)}
+                    {mine && (
+                      <span
+                        className="ml-1"
+                        aria-label={others.some((o) => readBy(o.id, m.created_at)) ? "Read" : "Delivered"}
+                      >
+                        ✓✓
+                      </span>
+                    )}
+                  </p>
                 </div>
 
                 <div

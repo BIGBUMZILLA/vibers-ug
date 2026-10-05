@@ -108,7 +108,7 @@ export async function listConversations(meId: string): Promise<ConversationSumma
 
   const { data: parts } = await supabase
     .from("conversation_participants")
-    .select("conversation_id, user_id, last_read_at")
+    .select("conversation_id, user_id, last_read_at, cleared_at")
     .in("conversation_id", ids);
 
   const otherIds = [...new Set((parts ?? []).map((p) => p.user_id).filter((id) => id !== meId))];
@@ -126,7 +126,10 @@ export async function listConversations(meId: string): Promise<ConversationSumma
 
   return convos.map((c) => {
     const mine = (parts ?? []).find((p) => p.conversation_id === c.id && p.user_id === meId);
-    const convoMsgs = (msgs ?? []).filter((m) => m.conversation_id === c.id) as Message[];
+    const clearedAt = mine ? new Date(mine.cleared_at).getTime() : 0;
+    const convoMsgs = (msgs ?? []).filter(
+      (m) => m.conversation_id === c.id && new Date(m.created_at).getTime() > clearedAt,
+    ) as Message[];
     const others = (parts ?? [])
       .filter((p) => p.conversation_id === c.id && p.user_id !== meId)
       .map((p) => profileMap.get(p.user_id))

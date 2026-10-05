@@ -125,6 +125,9 @@ function ProfilePage() {
               aria-label="Change photo"
             >
               <UserAvatar name={profile.display_name} avatar={profile.avatar_url} size={104} />
+              <span className="mt-3 inline-flex items-center gap-1 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-xs font-semibold text-foreground">
+                <span className="text-primary">✔</span> Urban Verified
+              </span>
               <span className="absolute bottom-0 right-0 rounded-full bg-primary p-2 text-primary-foreground">
                 <Camera className="h-4 w-4" />
               </span>
