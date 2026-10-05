@@ -96,7 +96,7 @@ function SettingsPage() {
     setS((prev) => ({ ...prev, [key]: value }));
     const { error } = await supabase
       .from("user_settings")
-      .upsert({ user_id: user.id, [key]: value, updated_at: new Date().toISOString() });
+      .upsert({ ...s, [key]: value, user_id: user.id, updated_at: new Date().toISOString() });
     if (error) toast.error("Couldn't save that setting");
   }
 
