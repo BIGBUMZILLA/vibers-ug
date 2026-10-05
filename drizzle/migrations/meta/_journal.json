@@ -57,6 +57,13 @@
       "when": 1791152186687,
       "tag": "0007_urban_chat_preferences_and_attachments",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791159314098,
+      "tag": "0008_restrict_member_and_post_reads",
+      "breakpoints": true
     }
   ]
 }
